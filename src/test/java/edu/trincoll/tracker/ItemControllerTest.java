@@ -133,7 +133,8 @@ class ItemControllerTest {
         @Test
         @DisplayName("should return 400 when name is missing")
         void shouldReturn400WhenNameMissing() throws Exception {
-            String invalidJson = "{\"description\":\"No name provided\"}";
+            String invalidJson = """
+                    {"description":"No name provided"}""";
             
             mockMvc.perform(post("/api/items")
                     .contentType(MediaType.APPLICATION_JSON)

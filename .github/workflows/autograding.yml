@@ -30,7 +30,6 @@ jobs:
     - name: Generate test report
       if: always()
       run: |
-        ./gradlew test --info
         echo "Test Results Summary:"
         if [ -f build/test-results/test/TEST-*.xml ]; then
           echo "Tests completed. Check the test report for details."
