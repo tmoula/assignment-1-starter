@@ -21,10 +21,14 @@ jobs:
         java-version: '21'
         distribution: 'temurin'
     
+    - name: Setup Gradle caching
+      uses: gradle/actions/setup-gradle@v3
+
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     
     - name: Run tests
+      id: test
       run: ./gradlew test
     
     - name: Generate test report
@@ -41,6 +45,24 @@ jobs:
       with:
         name: test-results
         path: build/test-results/test/
+    
+    - name: Write GitHub Step Summary
+      if: always()
+      run: |
+        {
+          echo "## 🧪 Test Summary"
+          echo
+          if [ "${{ job.status }}" = "success" ]; then
+            echo "✅ All tests passed."
+          else
+            echo "❌ Some tests failed."
+          fi
+          echo
+          if [ -f build/reports/tests/test/index.html ]; then
+            echo "• HTML report: build/reports/tests/test/index.html"
+          fi
+          echo "• Raw JUnit XML: uploaded as 'test-results' artifact."
+        } >> "$GITHUB_STEP_SUMMARY"
     
     - name: Comment PR with results
       if: github.event_name == 'pull_request' && always()
