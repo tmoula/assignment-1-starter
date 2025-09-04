@@ -3,6 +3,7 @@ package edu.trincoll.tracker;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 /**
  * Base entity class for your domain object.
@@ -84,4 +85,30 @@ public class Item {
     
     // TODO: Consider overriding equals() and hashCode() based on your domain
     // This is important for testing and collections
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Item item = (Item) o;
+        return completed == item.completed &&
+               Objects.equals(id, item.id) &&
+               Objects.equals(name, item.name) &&
+               Objects.equals(description, item.description);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, description, completed);
+    }
+
+    @Override
+    public String toString() {
+        return "Item{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", createdAt=" + createdAt +
+                ", completed=" + completed +
+                '}';
+    }
 }

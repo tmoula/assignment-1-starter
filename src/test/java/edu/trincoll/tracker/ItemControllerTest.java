@@ -35,8 +35,7 @@ class ItemControllerTest {
     @BeforeEach
     void setUp() throws Exception {
         // Clear any existing data before each test
-        mockMvc.perform(get("/api/items"))
-                .andExpect(status().isOk());
+        ItemController.clearStore();
     }
     
     @Nested
