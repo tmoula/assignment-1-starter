@@ -20,24 +20,31 @@ import java.util.Objects;
  * - Movie: title, director, year, rating, watched
  */
 public class Movie {
-    
+
     private Long id;
-    
-    // TODO: Replace these example fields with your domain-specific fields
-    @NotBlank(message = "Name is required")
-    @Size(min = 1, max = 100, message = "Name must be between 1 and 100 characters")
-    private String name;
-    
-    private String description;
-    
+
+    @NotBlank(message = "Title is required")
+    @Size(min = 1, max = 100, message = "Title must be between 1 and 100 characters")
+    private String title;
+
+    @Size(max = 100, message = "Director must be at most 100 characters")
+    private String director;
+
+    @Min(value = 1888, message = "Year must be >= 1888")
+    @Max(value = 2100, message = "Year must be reasonable")
+    private Integer year;
+
+    @Min(value = 0, message = "Rating must be >= 0")
+    @Max(value = 10, message = "Rating must be <= 10")
+    private Integer rating; // 0–10 (nullable)
+
+    private boolean watched;
+
     private LocalDateTime createdAt;
-    
-    private boolean completed;
-    
-    // Constructor
+
     public Movie() {
         this.createdAt = LocalDateTime.now();
-        this.completed = false;
+        this.watched = false;
     }
     
     // TODO: Generate getters and setters for all your fields
