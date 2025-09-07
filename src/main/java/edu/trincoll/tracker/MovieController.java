@@ -11,15 +11,15 @@ import java.util.stream.Collectors;
 
 /**
  * AI Collaboration Report:
- * - AI Tool Used: [Your AI tool here - ChatGPT/Claude/Copilot/Gemini]
- * - Most Helpful Prompt: [Paste the prompt that worked best]
- * - AI Mistake We Fixed: [Describe what the AI got wrong and how you fixed it]
- * - Time Saved: [Estimate hours saved using AI]
- * - Team Members: [List your team members' names]
+ * - AI Tool Used: Chatgpt 5
+ * - Most Helpful Prompt: Explain pull push commit
+ * - AI Mistake We Fixed: None
+ * - Time Saved: A lot, hours at least
+ * - Team Members: Varvara Esina, Taha Moula, Daniel Simon
  */
 @RestController
 @RequestMapping(value = "/api/items", produces = MediaType.APPLICATION_JSON_VALUE) // TODO: Rename to match your domain (e.g., /api/bookmarks, /api/recipes)
-public class ItemController {
+public class MovieController {
 
     // Simple in-memory store (will be replaced by a database later)
     private static final Map<Long, Item> STORE = new ConcurrentHashMap<>();

@@ -13,6 +13,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class MovieTrackerApplication {
     
     public static void main(String[] args) {
-        SpringApplication.run(TrackerApplication.class, args);
+        SpringApplication.run(MovieTrackerApplication.class, args);
     }
 }
