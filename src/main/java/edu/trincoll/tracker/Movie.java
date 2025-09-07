@@ -69,29 +69,34 @@ public class Movie {
     // TODO: Consider overriding equals() and hashCode() based on your domain
     // This is important for testing and collections
 
-    @Override
+     @Override
     public boolean equals(Object o) {
+        if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Movie item = (Movie) o;
-        return completed == item.completed &&
-               Objects.equals(id, item.id) &&
-               Objects.equals(name, item.name) &&
-               Objects.equals(description, item.description);
+        Movie movie = (Movie) o;
+        return watched == movie.watched &&
+                Objects.equals(id, movie.id) &&
+                Objects.equals(title, movie.title) &&
+                Objects.equals(director, movie.director) &&
+                Objects.equals(year, movie.year) &&
+                Objects.equals(rating, movie.rating);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, description, completed);
+        return Objects.hash(id, title, director, year, rating, watched);
     }
 
     @Override
     public String toString() {
-        return "Item{" +
+        return "Movie{" +
                 "id=" + id +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
+                ", title='" + title + '\'' +
+                ", director='" + director + '\'' +
+                ", year=" + year +
+                ", rating=" + rating +
+                ", watched=" + watched +
                 ", createdAt=" + createdAt +
-                ", completed=" + completed +
                 '}';
     }
 }
