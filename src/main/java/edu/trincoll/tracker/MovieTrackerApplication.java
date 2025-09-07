@@ -10,7 +10,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * Examples: BookmarkApplication, QuoteKeeperApplication, HabitTrackerApplication
  */
 @SpringBootApplication
-public class TrackerApplication {
+public class MovieTrackerApplication {
     
     public static void main(String[] args) {
         SpringApplication.run(TrackerApplication.class, args);

@@ -19,7 +19,7 @@ import java.util.Objects;
  * - Recipe: name, ingredients, instructions, prepTime
  * - Movie: title, director, year, rating, watched
  */
-public class Item {
+public class Movie {
     
     private Long id;
     
@@ -35,7 +35,7 @@ public class Item {
     private boolean completed;
     
     // Constructor
-    public Item() {
+    public Movie() {
         this.createdAt = LocalDateTime.now();
         this.completed = false;
     }
@@ -43,45 +43,28 @@ public class Item {
     // TODO: Generate getters and setters for all your fields
     // Hint: IntelliJ can do this for you (Alt+Insert or Cmd+N)
     
-    public Long getId() {
-        return id;
-    }
-    
-    public void setId(Long id) {
-        this.id = id;
-    }
-    
-    public String getName() {
-        return name;
-    }
-    
-    public void setName(String name) {
-        this.name = name;
-    }
-    
-    public String getDescription() {
-        return description;
-    }
-    
-    public void setDescription(String description) {
-        this.description = description;
-    }
-    
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-    
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-    
-    public boolean isCompleted() {
-        return completed;
-    }
-    
-    public void setCompleted(boolean completed) {
-        this.completed = completed;
-    }
+   // Getters & setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+
+    public String getTitle() { return title; }
+    public void setTitle(String title) { this.title = title; }
+
+    public String getDirector() { return director; }
+    public void setDirector(String director) { this.director = director; }
+
+    public Integer getYear() { return year; }
+    public void setYear(Integer year) { this.year = year; }
+
+    public Integer getRating() { return rating; }
+    public void setRating(Integer rating) { this.rating = rating; }
+
+    public boolean isWatched() { return watched; }
+    public void setWatched(boolean watched) { this.watched = watched; }
+
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+
     
     // TODO: Consider overriding equals() and hashCode() based on your domain
     // This is important for testing and collections
@@ -89,7 +72,7 @@ public class Item {
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
-        Item item = (Item) o;
+        Movie item = (Movie) o;
         return completed == item.completed &&
                Objects.equals(id, item.id) &&
                Objects.equals(name, item.name) &&
