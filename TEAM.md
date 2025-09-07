@@ -1,4 +1,4 @@
 # Team
 - Taha
-- Teammate 1
+- Varya
 - Teammate 2
