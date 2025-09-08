@@ -18,113 +18,120 @@ import java.util.stream.Collectors;
  * - Team Members: Varvara Esina, Taha Moula, Daniel Simon
  */
 @RestController
-@RequestMapping(value = "/api/items", produces = MediaType.APPLICATION_JSON_VALUE) // TODO: Rename to match your domain (e.g., /api/bookmarks, /api/recipes)
+@RequestMapping(value = "/api/movies", produces = MediaType.APPLICATION_JSON_VALUE)
 public class MovieController {
 
-    // Simple in-memory store (will be replaced by a database later)
-    private static final Map<Long, Item> STORE = new ConcurrentHashMap<>();
+    // In-memory store (placeholder for a real database)
+    private static final Map<Long, Movie> STORE = new ConcurrentHashMap<>();
     private static final AtomicLong ID_SEQ = new AtomicLong(1);
 
     /**
-     * GET /api/items
-     * Returns all items in the system
+     * GET /api/movies
+     * Returns all movies
      */
     @GetMapping
-    public ResponseEntity<List<Item>> getAll() {
-        List<Item> items = STORE.values()
+    public ResponseEntity<List<Movie>> getAll() {
+        List<Movie> movies = STORE.values()
                 .stream()
-                .sorted(Comparator.comparing(Item::getId))
+                .sorted(Comparator.comparing(Movie::getId))
                 .collect(Collectors.toList());
-        return ResponseEntity.ok(items);
+        return ResponseEntity.ok(movies);
     }
 
     /**
-     * GET /api/items/{id}
-     * Returns a specific item by ID
-     * Return 404 if item doesn't exist
+     * GET /api/movies/{id}
+     * Returns a movie by ID (404 if not found)
      */
     @GetMapping("/{id}")
-    public ResponseEntity<Item> getById(@PathVariable Long id) {
-        Item item = STORE.get(id);
-        if (item == null) {
+    public ResponseEntity<Movie> getById(@PathVariable Long id) {
+        Movie movie = STORE.get(id);
+        if (movie == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
-        return ResponseEntity.ok(item);
+        return ResponseEntity.ok(movie);
     }
 
     /**
-     * POST /api/items
-     * Creates a new item
-     * - Validate required fields (name)
-     * - Reject duplicates by name (409 Conflict)
+     * POST /api/movies
+     * Creates a new movie
+     * - Validate required fields (title)
+     * - Reject duplicates by title (409 Conflict)
+     * - Ignore client-provided id/createdAt
      */
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Item> create(@RequestBody Item item) {
-        // Validate name
-        if (item.getName() == null || item.getName().isBlank()) {
+    public ResponseEntity<Movie> create(@RequestBody Movie body) {
+        // Validate title
+        if (body.getTitle() == null || body.getTitle().isBlank()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
-        // Enforce uniqueness by name
+
+        // Enforce uniqueness by title (case-sensitive to match starter style; change to equalsIgnoreCase if desired)
         boolean duplicate = STORE.values().stream()
-                .anyMatch(existing -> Objects.equals(existing.getName(), item.getName()));
+                .anyMatch(existing -> Objects.equals(existing.getTitle(), body.getTitle()));
         if (duplicate) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
 
-        // Assign new ID (ignore any provided id)
+        // Assign new ID and build the server object
         long id = ID_SEQ.getAndIncrement();
-        Item toSave = new Item();
+        Movie toSave = new Movie();
         toSave.setId(id);
-        toSave.setName(item.getName());
-        toSave.setDescription(item.getDescription());
-        toSave.setCompleted(item.isCompleted());
-        // Keep server-controlled createdAt from constructor; do not override from client
+        toSave.setTitle(body.getTitle());
+        toSave.setDirector(body.getDirector());
+        toSave.setYear(body.getYear());
+        toSave.setRating(body.getRating());
+        toSave.setWatched(body.isWatched());
+        // Keep Movie()'s server-side createdAt
 
         STORE.put(id, toSave);
         return ResponseEntity.status(HttpStatus.CREATED).body(toSave);
     }
 
     /**
-     * PUT /api/items/{id}
-     * Updates an existing item
-     * - Validate required fields (name)
-     * - Return 404 if item doesn't exist
-     * - Reject duplicates by name (409 Conflict) if changing to an existing name
+     * PUT /api/movies/{id}
+     * Updates an existing movie
+     * - Validate required fields (title)
+     * - Return 404 if movie doesn't exist
+     * - Reject duplicates by title (409 Conflict) if changing to an existing title
+     * - Preserve original createdAt
      */
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Item> update(@PathVariable Long id, @RequestBody Item update) {
-        Item existing = STORE.get(id);
+    public ResponseEntity<Movie> update(@PathVariable Long id, @RequestBody Movie update) {
+        Movie existing = STORE.get(id);
         if (existing == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
-        if (update.getName() == null || update.getName().isBlank()) {
+
+        if (update.getTitle() == null || update.getTitle().isBlank()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
-        // Prevent changing to a name that duplicates another item's name
-        boolean duplicateName = STORE.values().stream()
+
+        boolean duplicateTitle = STORE.values().stream()
                 .anyMatch(other -> !Objects.equals(other.getId(), id)
-                        && Objects.equals(other.getName(), update.getName()));
-        if (duplicateName) {
+                        && Objects.equals(other.getTitle(), update.getTitle()));
+        if (duplicateTitle) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
 
-        existing.setName(update.getName());
-        existing.setDescription(update.getDescription());
-        existing.setCompleted(update.isCompleted());
-        // Keep original createdAt (ignore client-sent value)
+        existing.setTitle(update.getTitle());
+        existing.setDirector(update.getDirector());
+        existing.setYear(update.getYear());
+        existing.setRating(update.getRating());
+        existing.setWatched(update.isWatched());
+        // createdAt stays as-is
 
         return ResponseEntity.ok(existing);
     }
 
     /**
-     * DELETE /api/items/{id}
-     * Deletes an item
-     * - Return 204 No Content on successful delete
+     * DELETE /api/movies/{id}
+     * Deletes a movie
+     * - Return 204 No Content on success
      * - Return 404 if not found
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        Item removed = STORE.remove(id);
+        Movie removed = STORE.remove(id);
         if (removed == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
@@ -132,19 +139,19 @@ public class MovieController {
     }
 
     /**
-     * GET /api/items/search?name=value
-     * Searches items by name (case-insensitive contains)
+     * GET /api/movies/search?title=value
+     * Searches movies by title (case-insensitive contains)
      * BONUS endpoint
      */
     @GetMapping("/search")
-    public ResponseEntity<List<Item>> searchByName(@RequestParam("name") String name) {
-        if (name == null) {
+    public ResponseEntity<List<Movie>> searchByTitle(@RequestParam("title") String title) {
+        if (title == null) {
             return ResponseEntity.badRequest().build();
         }
-        String query = name.toLowerCase(Locale.ROOT);
-        List<Item> results = STORE.values().stream()
-                .filter(it -> it.getName() != null && it.getName().toLowerCase(Locale.ROOT).contains(query))
-                .sorted(Comparator.comparing(Item::getId))
+        String query = title.toLowerCase(Locale.ROOT);
+        List<Movie> results = STORE.values().stream()
+                .filter(m -> m.getTitle() != null && m.getTitle().toLowerCase(Locale.ROOT).contains(query))
+                .sorted(Comparator.comparing(Movie::getId))
                 .collect(Collectors.toList());
         return ResponseEntity.ok(results);
     }
